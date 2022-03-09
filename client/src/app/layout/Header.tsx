@@ -3,19 +3,16 @@ import { AppBar, Switch, Toolbar, Typography } from "@mui/material";
 import React from "react";
 
 interface Props {
-  setDarkMode: (e: any) => void;
+  darkMode: boolean;
+  handleThemeChange: () => void;
 }
 
-const Header = ({ setDarkMode }: Props) => {
-  const setMode = (e: any) => {
-    setDarkMode(e.target.checked);
-  };
-
+const Header = ({ darkMode, handleThemeChange }: Props) => {
   return (
     <AppBar position="static" sx={{ mb: 4 }}>
       <Toolbar>
         <Typography variant="h6">E-Commerce</Typography>
-        <Switch onChange={setMode}></Switch>
+        <Switch checked={darkMode} onChange={handleThemeChange}></Switch>
       </Toolbar>
     </AppBar>
   );
