@@ -12,24 +12,26 @@ import {
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { Product } from "../../app/models/product";
-import axios from "axios";
 import { ArrowBack } from "@mui/icons-material";
+import agent from "../../app/api/agent";
+import history from "history";
+import NotFound from "../../app/errors/NotFound";
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  console.log(id);
   useEffect(() => {
-    axios
-      .get(`https://localhost:44331/api/Products/${id}`)
-      .then((response) => setProduct(response.data))
-      .catch((error) => console.log(error))
+    agent.Catalog.details(parseInt(id))
+      .then((product: Product) => setProduct(product))
+      .catch((error) => {
+        console.log(error);
+      })
       .finally(() => setLoading(false));
   }, [id]);
 
   if (loading) return <h3>Loading ...</h3>;
-  if (!product) return <h3>Product not found</h3>;
+  if (!product) return <NotFound></NotFound>;
 
   return (
     <>
