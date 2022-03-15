@@ -1,4 +1,5 @@
-﻿using API.DAL.Entities;
+﻿using API.DAL.Dtos;
+using API.DAL.Entities;
 using API.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +22,26 @@ namespace API.Controllers
     }
 
     [HttpGet]
-    public async Task<ActionResult<Basket>> GetBasket()
+    public async Task<ActionResult<BasketDto>> GetBasket()
     {
       Basket Basket = await RetrieveBasket();
 
       if (Basket == null) return NotFound();
-      return Basket;
+      return new BasketDto
+      {
+        Id = Basket.Id,
+        BuyerId = Basket.BuyedID,
+        Items = Basket.Items.Select(I => new BasketItemDto
+        {
+          ProductId = I.ProductId,
+          Name = I.Product.Name,
+          Price = I.Product.Price,
+          PictureUrl = I.Product.PictureUrl,
+          Type = I.Product.Type,
+          Brand = I.Product.Brand,
+          Quantity = I.Quantity
+        }).ToList()
+      };
     }
 
 
@@ -48,7 +63,20 @@ namespace API.Controllers
     [HttpDelete]
     public async Task<ActionResult> RemoveBasketItem(int productId, int quantity)
     {
-      return StatusCode(201);
+      //get basket
+      var Basket = await RetrieveBasket();
+      if (Basket == null) return NotFound();
+
+      var product = await context.Products.FindAsync(productId);
+      if (product == null) return NotFound();
+
+      Basket.removeItem(productId, quantity);
+
+      var result = await context.SaveChangesAsync() > 0;
+      if (result) return Ok();
+      return BadRequest(new ProblemDetails { Title = "Problem Removing Item From the basket" });
+      //remove item
+      //save changes
     }
 
     private async Task<Basket> RetrieveBasket()
