@@ -8,6 +8,9 @@ namespace API.DAL.Entities
     public int Id { get; set; }
     public string BuyedID { get; set; }
     public List<BasketItem> Items { get; set; } = new();
+
+
+
     public void AddItem(Product product, int quantity)
     {
       if (Items.All(item => item.ProductId != product.Id))
