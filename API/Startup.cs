@@ -39,7 +39,7 @@ namespace API
             {
                 options.AddPolicy(name: AllowAll, builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000", "http://localhost:3001").AllowAnyMethod().AllowAnyHeader();
+                    builder.WithOrigins("http://localhost:3000", "https://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
                 });
             });
         }
@@ -55,8 +55,6 @@ namespace API
             }
 
             app.UseCors(AllowAll);
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 

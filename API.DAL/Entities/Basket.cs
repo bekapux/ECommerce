@@ -17,7 +17,6 @@ namespace API.DAL.Entities
       {
         Items.Add(new BasketItem { Product = product, Quantity = quantity });
       }
-      Items.FirstOrDefault(item => item.Product.Id == product.Id).Quantity += 1;
       var existingItem = Items.FirstOrDefault(item => item.ProductId == product.Id);
       if (existingItem != null) existingItem.Quantity += quantity;
     }
